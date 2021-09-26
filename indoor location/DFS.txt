@@ -1,0 +1,27 @@
+/*
+    visit(v) - 访问顶点v
+    visited[] - 记录顶点是否已访问
+    FirstNeighbor(G, v) - 返回v的第一个邻接点，找不到返回-1
+    NextNeighbor(G, v, w) - w是v的邻接点，返回除w之外的下一个邻接点，找不到返回-1
+*/
+
+void TRAVEL_DFS(Graph G){
+    int i;
+
+    for(i = 0; i < MAX_VERTEX; i++)
+        visited[i] = 0;
+    for(i = 0; i < MAX_VERTEX; i++)
+        if(!visited[i])
+            DFS(G, i);
+}
+
+void DFS(Graph G, int v){
+    int w;
+
+    visit(v);
+    visited[v] = TRUE;
+    for(w = FirstNeighbor(G, v); w >= 0; w = NextNeighbor(G, v, w)){
+        if(!visited[w])
+            DFS(G, w);
+    }
+}

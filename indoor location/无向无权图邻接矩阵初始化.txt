@@ -1,0 +1,48 @@
+/*
+    无向无权图邻接矩阵初始化
+*/
+#include <stdio.h>
+#define MAX_VERTEX 6 //顶点个数
+#define INFINITY -1
+
+//无权无向图
+typedef struct{
+    int vertex[MAX_VERTEX];
+    int edge[MAX_VERTEX][MAX_VERTEX];
+}MGraph;
+
+void MGraphInit(MGraph *G);
+
+int main(){
+    int i, j;
+    MGraph G;
+    MGraphInit(&G);
+
+
+    for(i = 0; i < MAX_VERTEX; i++){
+        for(j = 0; j < MAX_VERTEX; j++)
+            printf("%d%c", G.edge[i][j], (j == MAX_VERTEX -1) ? '\n' : '\t');
+    }
+    return 0;
+}
+
+
+
+void MGraphInit(MGraph *G){
+    int i, j;
+    int v1, v2;
+
+    for(i = 0; i < MAX_VERTEX; i++)
+        G->vertex[i] = i;
+    for(i = 0; i < MAX_VERTEX; i++){
+        for(j = 0; j < MAX_VERTEX; j++)
+            G->edge[i][j] = INFINITY;
+    }
+    printf("输入相连的顶点：\n");
+    for(i = 0; i < MAX_VERTEX; i++)
+        G->edge[i][i] = 1;
+    while(~scanf("%d %d", &v1, &v2)){
+        G->edge[v1][v2] = 1;
+        G->edge[v2][v1] = 1;
+    }
+}

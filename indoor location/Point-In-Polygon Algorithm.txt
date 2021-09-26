@@ -1,0 +1,81 @@
+/*
+    判断点是否在多边形内部
+*/
+
+#include <stdio.h>
+#include <math.h>
+
+#define TRUE 1
+#define FALSE 0
+
+
+int isRayMeetEdge(float X, float Y, float x1, float y1, float x2, float y2);
+float max(float a, float b);
+float min(float a, float b);
+
+int main(){
+    int i, j;
+    int polyEdges;
+    int count;
+    //多边形点坐标
+    float polyX[] = {0, 2, 3, 4, 3, 4, 2, 0};
+    float polyY[] = {1, 0, 1, 0, 2, 3, 5, 3};
+    //测试点坐标
+    float testX, testY;
+
+    printf("输入测试点坐标：\n");
+    scanf("%f %f", &testX, &testY);
+    polyEdges = sizeof(polyX) / sizeof(float);
+
+    count = 0;
+    j = polyEdges -1;
+    for(i = 0; i < polyEdges; i++){
+        if(isRayMeetEdge(testX, testY, polyX[i], polyY[i], polyX[j], polyY[j]))
+            count++;
+        j = i;
+    }
+    if(count % 2 == 0)
+        printf("测试点不在多边形内");
+    else
+        printf("测试点在多边形内");
+
+    return 0;
+}
+
+int isRayMeetEdge(float X, float Y, float x1, float y1, float x2, float y2){
+    float interX;
+
+    //边与射线平行、重合
+    if(y1 == y2)
+        return FALSE;
+    //边在射线之上
+    if(y1 > Y && y2 > Y)
+        return FALSE;
+    //边在射线之下
+    if(y1 < Y && y2 < Y)
+        return FALSE;
+    //边与射线有一个交点
+    if(y1 == Y && y2 > Y)
+        return FALSE;
+    if(y2 == Y && y1 > Y)
+        return FALSE;
+    //边在射线左侧
+    if(x1 < X && x2 < X)
+        return FALSE;
+    if((x1 < x2 && y1 > y2) || (x2 < x1 && y2 > y1))
+        interX = max(x1, x2) - (Y - min(y1, y2)) / (max(y1, y2) - min(y1, y2)) * (max(x1, x2) - min(x1, x2));
+    if((x1 < x2 && y1 < y2) || (x2 < x1 && y2 < y1))
+        interX = min(x1, x2) + (Y - min(y1, y2)) / (max(y1, y2) - min(y1, y2)) * (max(x1, x2) - min(x1, x2));
+    //printf("interX等于%f\n", interX);
+    if(interX  < X)
+        return FALSE;
+
+    return TRUE;
+}
+
+float max(float a, float b){
+    return (a > b) ? a : b;
+}
+float min(float a, float b){
+    return (a > b) ? b : a;
+}

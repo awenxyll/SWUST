@@ -1,0 +1,36 @@
+/*
+    visit(v) - 访问顶点v
+    visited[] - 记录顶点是否已访问
+    EnQueue(Q, v) - v 入队
+    DeQueue(Q) - 出队并返回队首
+    FirstNeighbor(G, v) - 返回v的第一个邻接点，找不到返回-1
+    NextNeighbor(G, v, w) - w是v的邻接点，返回除w之外的下一个邻接点，找不到返回-1
+*/
+
+void TRAVEL_BFS(Graph G){
+    int i;
+        
+    for(i = 0; i < n; i++)
+        visited[i] = 0;
+    for(i = 0; i < n; i++)
+        if(!visited[i])
+            BFS(G, i);
+}
+
+void BFS(Graph G, int v){
+    int w;
+        
+    visit(v);
+    visited[v] = TRUE;
+    EnQueue(Q, v);
+    while(!isEmpty(Q)){
+        v = DeQueue(Q);
+        for(w = FirstNeighbor(G, v); w >= 0; w = NextNeighbor(G, v, w)){
+            if(!visited[w]){
+                visit(w);
+                visited[w] = TRUE;
+                EnQueue(Q, w);
+            }
+        }
+    }                
+}

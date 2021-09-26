@@ -1,0 +1,64 @@
+/*
+    无向无权图邻接表初始化
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_VERTEX 6  //顶点个数
+#define INFINITY 65535
+
+//顶点链表
+typedef struct VerNode{
+    int VerNum;
+    struct VerNode *NextVer;
+}VerList;
+
+//无权无向图
+typedef struct{
+    VerList graph[MAX_VERTEX];
+}LGraph;
+
+void LGraphInit(LGraph *G);
+
+int main(){
+    int i;
+    VerList *p, *q;
+    LGraph G;
+
+    LGraphInit(&G);
+    for(i = 0; i < MAX_VERTEX; i++){
+        p = &(G.graph[i]);
+        for(q = p; q != NULL; q = q->NextVer){
+            printf("%d\t", q->VerNum);
+        }
+        printf("\n");
+    }
+    return 0;
+}
+
+void LGraphInit(LGraph *G){
+    int i;
+    int v1, v2;
+
+    for(i = 0; i < MAX_VERTEX; i++){
+        G->graph[i].VerNum = i;
+        G->graph[i].NextVer = NULL;
+    }
+    printf("输入相连的顶点：\n");
+    while(~scanf("%d %d", &v1, &v2)){
+        /*
+            VerList node1;
+            VerLise node2;
+            这样声明调用完LGLGraphInit()后空间会被回收
+        */
+        VerList *node1 = (VerList*)malloc(sizeof(VerList));
+        VerList *node2 = (VerList*)malloc(sizeof(VerList));
+
+        node1->VerNum = v2;
+        node1->NextVer = G->graph[v1].NextVer;
+        G->graph[v1].NextVer = node1;
+
+        node2->VerNum = v1;
+        node2->NextVer = G->graph[v2].NextVer;
+        G->graph[v2].NextVer = node2;
+    }
+}

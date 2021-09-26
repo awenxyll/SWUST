@@ -1,0 +1,78 @@
+/*
+    队列(FIFO)出队和入队
+*/
+#include <stdio.h>
+#include <stdlib.h>
+
+
+typedef struct node{
+    int data;
+    struct node *next;
+}list;
+
+list *CreatList();
+void *EnQueue(list *p, int data);
+int DeQueue(list *p);
+
+int main(){
+    list *p, *r;
+    int EnData;
+    int DeData;
+
+    p = CreatList();
+    r = p->next;
+
+    while(r != NULL){
+        printf("%d\t", r->data);
+        r = r->next;
+    }
+
+    return 0;
+}
+
+list *CreatList(){
+    list *temp;
+    int data;
+
+    list *p = (list *)malloc(sizeof(list));
+    p->data = 0;
+    p->next = NULL;
+    temp = p;
+
+    printf("输入链表节点数值：\n");
+    while(~scanf("%d", &data)){
+       while(temp->next != NULL)
+            temp = temp->next;
+       list *q = (list *)malloc(sizeof(list));
+       q->data = data;
+       temp->next = q;
+       q->next = NULL;
+    }
+
+    return p;
+}
+
+void *EnQueue(list *p, int data){
+    list *temp;
+
+    temp = p;
+    while(temp->next != NULL)
+        temp = temp->next;
+    list *q = (list *)malloc(sizeof(list));
+    q->data = data;
+    q->next = NULL;
+    temp->next = q;
+}
+
+int DeQueue(list *p){
+    list *temp;
+    int data;
+
+    temp = p;
+    temp = temp->next;
+    data = temp->data;
+    p->next = temp->next;
+    free(temp);
+
+    return data;
+}

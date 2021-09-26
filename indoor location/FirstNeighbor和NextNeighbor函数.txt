@@ -1,0 +1,35 @@
+//w是v的邻接点，返回除w之外的下一个邻接点，找不到返回-1
+int NextNeighbor(LGraph *G, int v, int w){
+    VerList *p;
+
+    p = G->graph[v].NextVer;
+    while(p != NULL){
+        //w在最后一个位置
+        if(p->VerNum == w && p->NextVer == NULL)
+            return -1;
+        //w不在最后一个位置
+        if(p->VerNum == w && p->NextVer != NULL)
+            return p->NextVer->VerNum;
+        p = p->NextVer;
+    }
+}
+
+
+//返回v的第一个邻接点，找不到返回-1
+int FirstNeighbor(LGraph *G, int v){
+    int i;
+    VerList *p;
+
+    for(i = 0; i < MAX_VERTEX; i++){
+        if(v == G->graph[i].VerNum)
+            break;
+        if(i == MAX_VERTEX)
+            return -1;
+    }
+
+    p = &(G->graph[v]);
+    if(p->NextVer == NULL)
+        return -1;
+    else
+        return p->NextVer->VerNum;
+}
