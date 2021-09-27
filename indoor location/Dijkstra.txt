@@ -1,0 +1,181 @@
+/*
+0 1 7
+0 2 9
+0 5 14
+1 2 10
+1 3 15
+2 3 11
+2 5 2
+3 4 6
+4 5 9
+
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_VERTEX 6  //顶点个数
+#define INFINITY 65535
+
+//顶点链表
+typedef struct VerNode{
+    int VerNum;
+    int weight;
+    struct VerNode *NextVer;
+}VerList;
+
+//无权无向图
+typedef struct{
+    VerList graph[MAX_VERTEX];
+}LGraph;
+
+int isFinal[MAX_VERTEX];
+int dist[MAX_VERTEX];
+int pre[MAX_VERTEX];
+
+void LGraphInit(LGraph *G);
+void Dijkstra(LGraph *G, int v);
+int min(/*int dist[MAX_VERTEX], int isFinal[MAX_VERTEX]*/);
+
+int main(){
+    int i;
+    int start, end;
+    VerList *p, *q;
+    LGraph G;
+
+    for(i = 0; i < MAX_VERTEX; i++)
+        isFinal[i] = 0;
+    for(i = 0; i < MAX_VERTEX; i++)
+        dist[i] = INFINITY;
+    for(i = 0; i < MAX_VERTEX; i++)
+        pre[i] = -1;
+
+
+    LGraphInit(&G);
+
+    for(i = 0; i < MAX_VERTEX; i++){
+        p = &(G.graph[i]);
+        printf("%d  ", p->VerNum);
+        for(q = p->NextVer; q != NULL; q = q->NextVer){
+            printf("(%d %d)  ", q->VerNum, q->weight);
+        }
+        printf("\n");
+    }
+    printf("输入搜索起点：\n");
+    scanf("%d", &start);
+    printf("输入搜索终点：\n");
+    scanf("%d", &end);
+
+    Dijkstra(&G, 0);
+
+    //输出路径
+    printf("%d ", end);
+    while(pre[end] != -1){
+        printf("%d ", pre[end]);
+        end = pre[end];
+    }
+
+    return 0;
+}
+
+void LGraphInit(LGraph *G){
+    int i;
+    int v1, v2, weight;
+
+    for(i = 0; i < MAX_VERTEX; i++){
+        G->graph[i].VerNum = i;
+        G->graph[i].NextVer = NULL;
+    }
+    printf("输入相连的顶点：起点 终点 权重\n");
+    while(~scanf("%d %d %d", &v1, &v2, &weight)){
+        /*
+            VerList node1;
+            VerLise node2;
+            这样声明调用完LGLGraphInit()后空间会被回收
+        */
+        VerList *node1 = (VerList*)malloc(sizeof(VerList));
+        VerList *node2 = (VerList*)malloc(sizeof(VerList));
+
+        node1->VerNum = v2;
+        node1->weight = weight;
+        node1->NextVer = G->graph[v1].NextVer;
+        G->graph[v1].NextVer = node1;
+
+        node2->VerNum = v1;
+        node2->weight = weight;
+        node2->NextVer = G->graph[v2].NextVer;
+        G->graph[v2].NextVer = node2;
+    }
+}
+
+void Dijkstra(LGraph *G, int v){
+    int i, j, k;
+    VerList *p, *q, *r, *s;
+
+    //isFinal,dist,pre数组初始化
+    isFinal[v] = 1;
+    pre[v] = -1;
+    dist[v] = 0;
+    p = &(G->graph[v]);
+    q = p->NextVer;
+    while(q != NULL){
+        if(dist[q->VerNum] = q->weight)
+            pre[q->VerNum] = v;
+        q = q->NextVer;
+    }
+
+    //遍历n-1个节点
+    for(i = 0; i < MAX_VERTEX - 1; i++){
+        j = min();
+        r = &(G->graph[j]);
+        s = r->NextVer;
+        while(s != NULL){
+            if(dist[j] + s->weight < dist[s->VerNum]){
+                dist[s->VerNum] = dist[j] + s->weight;
+                pre[s->VerNum] = j;
+            }
+            s = s->NextVer;
+        }
+        isFinal[j] = 1;
+    }
+
+    for(k = 0; k < MAX_VERTEX; k++)
+        printf("%d ", isFinal[k]);
+    printf("\n");
+    for(k = 0; k < MAX_VERTEX; k++)
+        printf("%d ", dist[k]);
+    printf("\n");
+    for(k = 0; k < MAX_VERTEX; k++)
+        printf("%d ", pre[k]);
+    printf("\n");
+}
+
+//返回未确定最短路径的节点中dist最小的下标
+int min(/*int dist[MAX_VERTEX], int isFinal[MAX_VERTEX]*/){
+    int i, j, k;
+    int min;
+
+    j = i = 0;
+    while(1){
+        if(i < MAX_VERTEX && isFinal[i] == 0){
+            min = dist[i];
+            j = i;
+            break;
+        }
+        else
+            i++;
+    }
+
+    k = j;
+    while(j < MAX_VERTEX && isFinal[j] == 0){
+        if(dist[j] < min){
+            min = dist[j];
+            k = j;
+        }
+        j++;
+    }
+
+    return k;
+}
+
+
+
+
